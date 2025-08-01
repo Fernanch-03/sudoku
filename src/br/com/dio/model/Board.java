@@ -22,7 +22,7 @@ public class Board {
     }
 
     public GameStatusEnum getStatus(){
-        if (spaces.stream().flatMap(Collection::stream).noneMatch(s -> !s.isFixed() && nonNull(s.getActual()))){
+        if (spaces.stream().flatMap(Collection::stream).noneMatch(s -> s.isFixed() && nonNull(s.getActual()))){
             return NON_STARTED;
         }
 

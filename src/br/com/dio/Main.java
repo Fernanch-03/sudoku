@@ -3,10 +3,7 @@ package br.com.dio;
 import br.com.dio.model.Board;
 import br.com.dio.model.Space;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static br.com.dio.util.BoardTemplate.BOARD_TEMPLATE;
@@ -23,6 +20,7 @@ public class Main {
     private final static int BOARD_LIMIT = 9;
 
     public static void main(String[] args) {
+
         final var positions = Stream.of(args)
                 .collect(toMap(
                         k -> k.split(";")[0],
@@ -39,9 +37,13 @@ public class Main {
             System.out.println("6 - limpar jogo");
             System.out.println("7 - Finalizar jogo");
             System.out.println("8 - Sair");
-
-            option = scanner.nextInt();
-
+            try {
+                option = scanner.nextInt();
+            }catch (InputMismatchException e) {
+                System.out.println("Opção inválida, selecione uma das opções do menu");
+                scanner.nextLine();
+                continue;
+            }
             switch (option){
                 case 1 -> startGame(positions);
                 case 2 -> inputNumber();
@@ -81,7 +83,7 @@ public class Main {
 
     private static void inputNumber() {
         if (isNull(board)){
-            System.out.println("O jogo ainda não foi iniciado iniciado");
+            System.out.println("O jogo ainda não foi iniciado");
             return;
         }
 
@@ -171,7 +173,7 @@ public class Main {
             showCurrentGame();
             board = null;
         } else if (board.hasErrors()) {
-            System.out.println("Seu jogo conté, erros, verifique seu board e ajuste-o");
+            System.out.println("Seu jogo contém erros, verifique seu board e ajuste-o");
         } else {
             System.out.println("Você ainda precisa preenhcer algum espaço");
         }
@@ -179,10 +181,18 @@ public class Main {
 
 
     private static int runUntilGetValidNumber(final int min, final int max){
-        var current = scanner.nextInt();
+        var current = -1;
         while (current < min || current > max){
-            System.out.printf("Informe um número entre %s e %s\n", min, max);
-            current = scanner.nextInt();
+            try {
+                current = scanner.nextInt();
+                if(current < min || current > max){
+                    System.out.println("Entrada inválida, tente novamente");
+                }
+            }catch (InputMismatchException e) {
+                    System.out.println("Entrada inválida! Tente novamente");
+                    scanner.nextLine();
+            }
+
         }
         return current;
     }
